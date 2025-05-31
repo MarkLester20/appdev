@@ -1,0 +1,93 @@
+<div class="admindashboard-body">
+    <div class="container">
+        
+        <div class="sidebar">
+            <div class="logo">
+                <h1>GC<br><span>CO</span></h1>
+            </div>
+            <div class="nav">
+                <div class="nav-item active">Dashboard</div>
+                <a routerLink="/admininventory">
+                  <div class="nav-item">Inventory</div>
+                </a>
+                <a routerLink="/adminorders">
+                  <div class="nav-item">Orders</div>
+                </a>
+                <a routerLink="/adminpending">
+                  <div class="nav-item">Pending</div>
+                </a>
+                <a routerLink="/adminannouncement">
+                  <div class="nav-item">Announcement</div>
+                </a>
+              </div>              
+        </div>
+
+        <!-- Main Content -->
+        <div class="main">
+            <!-- Loading State -->
+            <div *ngIf="loading" class="loading-container">
+                <p>Loading dashboard data...</p>
+            </div>
+
+            <!-- Error State -->
+            <div *ngIf="error && !loading" class="error-container">
+                <p>{{ error }}</p>
+                <button (click)="loadDashboardData()">Retry</button>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div *ngIf="!loading && !error">
+                <!-- Top Cards -->
+                <div class="top-cards">
+                    <div class="card">
+                        <h3>New Orders Today</h3>
+                        <p>{{ formatNumber(dashboardStats.newOrders) }}</p>
+                    </div>
+                    <div class="card">
+                        <h3>Pending Orders</h3>
+                        <p>{{ formatNumber(dashboardStats.pendingOrders) }}</p>
+                    </div>
+                    <div class="card">
+                        <h3>Total Sales</h3>
+                        <p>{{ formatCurrency(dashboardStats.totalSales) }}</p>
+                    </div>
+                </div>
+
+                <!-- Stocks Section -->
+                <div class="stocks-section">
+                    <div class="stocks-header">
+                        <hr>
+                        <h2>Available Stocks</h2>
+                        <hr>    
+                    </div>
+                    <div class="stock-cards">
+                        <div class="stock-card">
+                            <h4>Men's Uniform</h4>
+                            <p>{{ formatNumber(getStockByCategory("Men's Uniform")) }}</p>
+                        </div>
+                        <div class="stock-card">
+                            <h4>Women's Uniform</h4>
+                            <p>{{ formatNumber(getStockByCategory("Women's Uniform")) }}</p>
+                        </div>
+                        <div class="stock-card">
+                            <h4>P.E. Uniform</h4>
+                            <p>{{ formatNumber(getStockByCategory("P.E. Uniform")) }}</p>
+                        </div>
+                        <div class="stock-card">
+                            <h4>NSTP Shirt</h4>
+                            <p>{{ formatNumber(getStockByCategory("NSTP Shirt")) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debug Information (remove in production) -->
+                <div class="debug-info" *ngIf="stockData.length > 0" style="margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
+                    <h4>Debug - Stock Data from Database:</h4>
+                    <div *ngFor="let stock of stockData">
+                        <strong>{{ stock.category }}:</strong> {{ stock.total_stock }} units
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

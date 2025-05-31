@@ -1,0 +1,153 @@
+<div class="product-detail-body">
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <img src="profilelogo.png" alt="Profile Logo" class="profilelogo">
+      </div>
+      <h2 class="studentname">{{ userFullName }}</h2>
+      <div class="nav">
+        <ul>
+          <li><a routerLink="/userdashboard">
+            <span class="navitem"><img src="dashboardlogo.png"></span>
+            <span>Dashboard</span>
+          </a></li>
+          <li><a routerLink="/usershop">
+            <span class="navitem"><img src="shoplogo.png"></span>
+            <span>Shop</span>
+          </a></li>
+          <li><a routerLink="/usercart">
+            <span class="navitem"><img src="cartlogo.png"></span>
+            <span>Cart</span>
+          </a></li>
+          <li><a routerLink="/userpurchase">
+            <span class="navitem"><img src="purchaselogo.png"></span>
+            <span>My Purchase</span>
+          </a></li>
+        </ul>
+      </div>
+      <hr class="line">
+      <div class="logout-container">
+        <a routerLink="/userlogin" class="logout">
+          <img src="logoutlogo.png" alt="Logout Logo" class="logoutlogo">
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Header with back button -->
+      <div class="header">
+        <button class="back-btn" (click)="goBack()">
+          <span>←</span>
+        </button>
+        <h2 class="page-title">Product Details</h2>
+        <div class="cart-icon">
+          <a routerLink="/usercart">
+            <img src="cart-icon.png" alt="Cart" class="cart-img">
+          </a>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading">
+        <p>Loading product details...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="error">
+        <p>{{ error }}</p>
+      </div>
+
+      <!-- Product Details -->
+      <div *ngIf="product && !loading" class="product-container">
+        
+        <!-- Product Image Section -->
+        <div class="product-image-section">
+          <div class="main-image">
+            <img [src]="getImageUrl(product.image_url)" [alt]="product.name" class="product-main-img">
+          </div>
+          
+          <!-- Thumbnail images (you can add multiple images later) -->
+          <div class="thumbnail-container">
+            <div class="thumbnail active">
+              <img [src]="getImageUrl(product.image_url)" [alt]="product.name" class="thumbnail-img">
+            </div>
+            <!-- Add more thumbnails here if you have multiple images -->
+          </div>
+        </div>
+
+        <!-- Product Info Section -->
+        <div class="product-info-section">
+          
+          <!-- Price -->
+          <div class="price-section">
+            <span class="currency">₱</span>
+            <span *ngIf="selectedVariant" class="current-price">{{ selectedVariant.price | number:'1.2-2' }}</span>
+            <span *ngIf="!selectedVariant && product.variants?.length" class="price-range">
+              {{ product.variants[0].price | number:'1.2-2' }}
+              <span *ngIf="product.variants.length > 1"> - {{ product.variants[product.variants.length - 1].price | number:'1.2-2' }}</span>
+            </span>
+          </div>
+
+          <!-- Product Name -->
+          <h1 class="product-name">{{ product.name }}</h1>
+          
+          <!-- Product Description -->
+          <div *ngIf="product.description" class="product-description">
+            <p>{{ product.description }}</p>
+          </div>
+
+          <!-- Stock Status -->
+          <div *ngIf="selectedVariant" class="stock-info">
+            <span class="stock-label">Stock:</span>
+            <span class="stock-count">{{ selectedVariant.stock }} available</span>
+          </div>
+
+          <!-- Size Selection -->
+          <div class="selection-section">
+            <h3 class="selection-title">Size</h3>
+            <div class="size-options">
+              <button 
+                *ngFor="let variant of product.variants" 
+                [class]="'size-btn ' + (selectedVariant?.variant_id === variant.variant_id ? 'selected' : '') + (variant.stock === 0 ? ' out-of-stock' : '')"
+                [disabled]="variant.stock === 0"
+                (click)="selectVariant(variant)">
+                {{ variant.size }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Quantity Selection -->
+          <div class="quantity-section">
+            <h3 class="selection-title">Quantity</h3>
+            <div class="quantity-controls">
+              <button class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity <= 1">-</button>
+              <span class="quantity">{{ quantity }}</span>
+              <button class="qty-btn" (click)="increaseQuantity()" [disabled]="!selectedVariant || quantity >= selectedVariant.stock">+</button>
+            </div>
+            <span *ngIf="selectedVariant" class="max-qty">Max: {{ selectedVariant.stock }}</span>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button 
+              class="add-to-cart-btn" 
+              (click)="addToCart()"
+              [disabled]="!selectedVariant || selectedVariant.stock === 0">
+              <span>🛒</span>
+              Add To Cart
+            </button>
+            <button 
+              class="buy-now-btn" 
+              (click)="buyNow()"
+              [disabled]="!selectedVariant || selectedVariant.stock === 0">
+              Buy Now
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

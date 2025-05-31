@@ -1,0 +1,132 @@
+<div class="admininventory-body">
+    <div class="container">
+        
+        <div class="sidebar">
+            <div class="logo">
+                <h1>GC<br><span>CO</span></h1>
+            </div>
+            <div class="nav">
+                <a routerLink="/admindashboard">
+                  <div class="nav-item">Dashboard</div>
+                </a>
+                <a routerLink="/admininventory">
+                  <div class="nav-item active">Inventory</div>
+                </a>
+                <a routerLink="/adminorders">
+                  <div class="nav-item">Orders</div>
+                </a>
+                <a routerLink="/adminpending">
+                  <div class="nav-item">Pending</div>
+                </a>
+                <a routerLink="/adminannouncement">
+                  <div class="nav-item">Announcement</div>
+                </a>
+              </div>
+              
+        </div>
+
+       
+        <div class="main">
+            <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data" class="item-upload-form">
+                <input type="text" formControlName="name" placeholder="Item Name" required>
+                <input type="text" formControlName="description" placeholder="Description">
+                <input type="file" (change)="onFileChange($event)" required>
+                <div formArrayName="sizes">
+                    <div *ngFor="let size of sizes.controls; let i = index" [formGroupName]="i" class="size-row">
+                    <input type="text" formControlName="size" placeholder="Size" required>
+                    <input type="number" formControlName="stock" placeholder="Stock" required>
+                    <input type="number" formControlName="price" placeholder="Price" required>
+                    </div>
+                </div>
+                <button type="button" (click)="addSize()">Add Size</button>
+                <button type="submit">Upload Item</button>
+                </form>
+
+            <div class="inventory-cards">
+                <div class="inventory-card">
+                    <h3>Men’s Uniform</h3>
+                    <div class="stock-info">
+                        <div class="label">Total Stocks</div>
+                        <div class="stock-number">
+                            1,000 
+                            <button class="add-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="order-info">
+                        <div>
+                            <div class="label">Pending Order</div>
+                            <div class="number">1,000</div>
+                        </div>
+                        <div>
+                            <div class="label">Available</div>
+                            <div class="number">1,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-card">
+                    <h3>Women’s Uniform</h3>
+                    <div class="stock-info">
+                        <div class="label">Total Stocks</div>
+                        <div class="stock-number">
+                            1,000 
+                            <button class="add-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="order-info">
+                        <div>
+                            <div class="label">Pending Order</div>
+                            <div class="number">1,000</div>
+                        </div>
+                        <div>
+                            <div class="label">Available</div>
+                            <div class="number">1,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-card">
+                    <h3>P.E. Uniform</h3>
+                    <div class="stock-info">
+                        <div class="label">Total Stocks</div>
+                        <div class="stock-number">
+                            1,000 
+                            <button class="add-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="order-info">
+                        <div>
+                            <div class="label">Pending Order</div>
+                            <div class="number">1,000</div>
+                        </div>
+                        <div>
+                            <div class="label">Available</div>
+                            <div class="number">1,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-card">
+                    <h3>NSTP Shirt</h3>
+                    <div class="stock-info">
+                        <div class="label">Total Stocks</div>
+                        <div class="stock-number">
+                            1,000 
+                            <button class="add-btn">+</button>
+                        </div>
+                    </div>
+                    <div class="order-info">
+                        <div>
+                            <div class="label">Pending Order</div>
+                            <div class="number">1,000</div>
+                        </div>
+                        <div>
+                            <div class="label">Available</div>
+                            <div class="number">1,000</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

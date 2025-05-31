@@ -1,0 +1,69 @@
+<div class="userdashboard-body">
+    
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="profilelogo.png" alt="Profile Logo" class="profilelogo">
+            </div>
+            <h2 class="studentname">{{ userFullName }}</h2>
+            <div class="nav">
+                <ul>
+                    <li><a routerLink="/userdashboard">
+                        <span class="navitem"><img src="dashboardlogo.png"></span>
+                        <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li><a routerLink="/usershop">
+                        <span class="navitem"><img src="shoplogo.png"></span>
+                        <span>Shop</span>
+                        </a>
+                    </li>
+                    <li><a routerLink="/usercart">
+                        <span class="navitem"><img src="cartlogo.png"></span>
+                        <span>Cart</span>
+                        </a>
+                    </li>
+                    <li><a routerLink="/userpurchase">
+                        <span class="navitem"><img src="purchaselogo.png"></span>
+                        <span>My Purchase</span>
+                        </a>
+                    </li>
+                </ul>
+                
+              </div>       
+              <hr class="line">    
+              <div class="logout-container">
+                <a routerLink="/userlogin" class="logout"><img src="logoutlogo.png" alt="Logout Logo" class="logoutlogo"></a> 
+              </div>    
+
+        </div>
+        <div class="content">
+            <h2 class="welcome-message">Welcome to your Dashboard, {{ userFullName }}!</h2>
+            <hr class="dashboard-line">
+
+            <h3>Find Uniform that you need</h3>
+            <img src="samplepic.png" alt="Sample Image" class="sample-pic">
+            <hr class="dashboard-line">
+            <h2>CATEGORY</h2>
+            <div class="category-container">
+                <div class="category-item">
+                    <img src="women.png" alt="Category 1" class="category-pic">
+                    
+                </div>
+                <div class="category-item">
+                    <img src="men.png" alt="Category 2" class="category-pic">
+                    
+                </div>
+                <div class="category-item">
+                    <img src="pe.png" alt="Category 3" class="category-pic">
+                    
+                </div>
+                <div class="category-item">
+                    <img src="nstp.png" alt="Category 3" class="category-pic">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

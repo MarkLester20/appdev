@@ -1,0 +1,125 @@
+<div class="category-products-body">
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <img src="profilelogo.png" alt="Profile Logo" class="profilelogo">
+      </div>
+      <h2 class="studentname">{{ userFullName }}</h2>
+      <div class="nav">
+        <ul>
+          <li><a routerLink="/userdashboard">
+            <span class="navitem"><img src="dashboardlogo.png"></span>
+            <span>Dashboard</span>
+          </a></li>
+          <li><a routerLink="/usershop">
+            <span class="navitem"><img src="shoplogo.png"></span>
+            <span>Shop</span>
+          </a></li>
+          <li><a routerLink="/usercart">
+            <span class="navitem"><img src="cartlogo.png"></span>
+            <span>Cart</span>
+          </a></li>
+          <li><a routerLink="/userpurchase">
+            <span class="navitem"><img src="purchaselogo.png"></span>
+            <span>My Purchase</span>
+          </a></li>
+        </ul>
+      </div>
+      <hr class="line">
+      <div class="logout-container">
+        <a routerLink="/userlogin" class="logout">
+          <img src="logoutlogo.png" alt="Logout Logo" class="logoutlogo">
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+      <!-- Header with back button -->
+      <div class="header">
+        <button class="back-btn" (click)="goBack()">
+          <span>←</span>
+        </button>
+        <h2 class="page-title">{{ categoryName }} Uniforms</h2>
+        <div class="cart-icon">
+          <a routerLink="/usercart">
+            <img src="cart-icon.png" alt="Cart" class="cart-img">
+          </a>
+        </div>
+      </div>
+
+      <hr class="dashboard-line">
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <p>Loading products...</p>
+      </div>
+
+      <!-- Error State -->
+      <div *ngIf="error && !loading" class="error-container">
+        <p>{{ error }}</p>
+      </div>
+
+      <!-- Products Grid -->
+      <div *ngIf="!loading && !error && products.length > 0" class="products-section">
+        <div class="products-grid">
+          <div *ngFor="let product of products" class="product-card" (click)="viewProductDetail(product.item_id)">
+            <div class="product-image">
+              <img [src]="getImageUrl(product.image_url)" [alt]="product.name" class="product-img">
+              <div *ngIf="getAvailableStock(product) === 0" class="out-of-stock-overlay">
+                <span>Out of Stock</span>
+              </div>
+            </div>
+            
+            <div class="product-info">
+              <h3 class="product-name">{{ product.name }}</h3>
+              
+              <div *ngIf="product.description" class="product-description">
+                <p>{{ product.description }}</p>
+              </div>
+              
+              <div class="product-price">
+                <span class="price">{{ getPriceRange(product) }}</span>
+              </div>
+              
+              <div class="product-stock">
+                <span class="stock-info">
+                  <span *ngIf="getAvailableStock(product) > 0" class="in-stock">
+                    {{ getAvailableStock(product) }} in stock
+                  </span>
+                  <span *ngIf="getAvailableStock(product) === 0" class="out-of-stock">
+                    Out of stock
+                  </span>
+                </span>
+              </div>
+
+              <!-- Available Sizes -->
+              <div class="available-sizes">
+                <span class="sizes-label">Sizes:</span>
+                <span class="sizes-list">
+                  <span *ngFor="let variant of product.variants; let last = last" 
+                        [class]="variant.stock > 0 ? 'size-available' : 'size-unavailable'">
+                    {{ variant.size }}<span *ngIf="!last">, </span>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && !error && products.length === 0" class="empty-state">
+        <div class="empty-content">
+          <img src="empty-products.png" alt="No Products" class="empty-img">
+          <h3>No Products Found</h3>
+          <p>There are no {{ categoryName.toLowerCase() }} uniforms available at the moment.</p>
+          <button class="back-to-shop-btn" (click)="goBack()">
+            Back to Shop
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
