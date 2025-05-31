@@ -11,20 +11,24 @@ import { UserdashboardComponent } from '../user/userdashboard/userdashboard.comp
 import { UsershopComponent } from '../user/usershop/usershop.component';    
 import { UsercartComponent } from '../user/usercart/usercart.component';
 import { UserpurchaseComponent } from '../user/userpurchase/userpurchase.component';
+import { ProductDetailComponent } from '../user/usershop/product-detail.component';
+import { CategoryProductsComponent } from '../user/usershop/category-products.component';
 import { AuthGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
     {path: '', redirectTo: '/adminlogin', pathMatch: 'full'},
     {path: 'adminlogin', component: AdminloginComponent},
-    {path: 'admindashboard', component: AdmindashboardComponent, canActivate: [AuthGuard]},
-    {path: 'admininventory', component: AdmininventoryComponent, canActivate: [AuthGuard]},
-    {path: 'adminorders', component: AdminordersComponent,  canActivate: [AuthGuard]},
-    {path: 'adminpending', component: AdminpendingComponent, canActivate: [AuthGuard]},
-    {path: 'adminannouncement', component: AdminannouncementComponent, canActivate: [AuthGuard]},
+    {path: 'admindashboard', component: AdmindashboardComponent, canActivate: [AuthGuard], data: { role: 'admin' }},
+    {path: 'admininventory', component: AdmininventoryComponent, canActivate: [AuthGuard], data: { role: 'admin' }},
+    {path: 'adminorders', component: AdminordersComponent, canActivate: [AuthGuard], data: { role: 'admin' }},
+    {path: 'adminpending', component: AdminpendingComponent, canActivate: [AuthGuard], data: { role: 'admin' }},
+    {path: 'adminannouncement', component: AdminannouncementComponent, canActivate: [AuthGuard], data: { role: 'admin' }},
 
     {path: 'userlogin', component: UserloginComponent},
-    {path: 'userdashboard', component: UserdashboardComponent, canActivate: [AuthGuard]},
-    {path: 'usershop', component: UsershopComponent,    canActivate: [AuthGuard]},
-    {path: 'usercart', component: UsercartComponent, canActivate: [AuthGuard]},
-    {path: 'userpurchase', component: UserpurchaseComponent, canActivate: [AuthGuard]},
+    {path: 'userdashboard', component: UserdashboardComponent, canActivate: [AuthGuard], data: { role: 'student' }},
+    {path: 'usershop', component: UsershopComponent, canActivate: [AuthGuard], data: { role: 'student' }},
+    {path: 'usercart', component: UsercartComponent, canActivate: [AuthGuard], data: { role: 'student' }},
+    {path: 'userpurchase', component: UserpurchaseComponent, canActivate: [AuthGuard], data: { role: 'student' }},
+    {path: 'category/:category', component: CategoryProductsComponent, canActivate: [AuthGuard], data: { role: 'student' }},
+    {path: 'product/:id', component: ProductDetailComponent, canActivate: [AuthGuard], data: { role: 'student' }},
 ];

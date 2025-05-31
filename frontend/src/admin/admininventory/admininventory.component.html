@@ -22,111 +22,225 @@
                   <div class="nav-item">Announcement</div>
                 </a>
               </div>
-              
         </div>
 
-       
         <div class="main">
+            <!-- Item Upload Form -->
             <form [formGroup]="itemForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data" class="item-upload-form">
+                <h2>Add New Item</h2>
                 <input type="text" formControlName="name" placeholder="Item Name" required>
                 <input type="text" formControlName="description" placeholder="Description">
-                <input type="file" (change)="onFileChange($event)" required>
-                <div formArrayName="sizes">
+                <input type="file" (change)="onFileChange($event)" accept="image/*" required>
+                
+                <div formArrayName="sizes" class="sizes-container">
+                    <h3>Variants</h3>
                     <div *ngFor="let size of sizes.controls; let i = index" [formGroupName]="i" class="size-row">
-                    <input type="text" formControlName="size" placeholder="Size" required>
-                    <input type="number" formControlName="stock" placeholder="Stock" required>
-                    <input type="number" formControlName="price" placeholder="Price" required>
+                        <input type="text" formControlName="size" placeholder="Size (e.g., S, M, L)" required>
+                        <input type="number" formControlName="stock" placeholder="Stock Quantity" min="0" required>
+                        <input type="number" formControlName="price" placeholder="Price" min="0" step="0.01" required>
+                        <button type="button" (click)="removeSize(i)" class="remove-size-btn" *ngIf="sizes.length > 1">×</button>
                     </div>
                 </div>
-                <button type="button" (click)="addSize()">Add Size</button>
-                <button type="submit">Upload Item</button>
-                </form>
+                
+                <div class="form-buttons">
+                    <button type="button" (click)="addSize()" class="add-size-btn">Add Size</button>
+                    <button type="submit" [disabled]="!itemForm.valid || !file" class="upload-btn">Upload Item</button>
+                </div>
+            </form>
 
-            <div class="inventory-cards">
-                <div class="inventory-card">
-                    <h3>Men’s Uniform</h3>
-                    <div class="stock-info">
-                        <div class="label">Total Stocks</div>
-                        <div class="stock-number">
-                            1,000 
-                            <button class="add-btn">+</button>
-                        </div>
-                    </div>
-                    <div class="order-info">
-                        <div>
-                            <div class="label">Pending Order</div>
-                            <div class="number">1,000</div>
-                        </div>
-                        <div>
-                            <div class="label">Available</div>
-                            <div class="number">1,000</div>
-                        </div>
-                    </div>
+            <!-- Loading indicator -->
+            <div *ngIf="loading" class="loading-container">
+                <p>Loading inventory data...</p>
+            </div>
+
+            <!-- Items Management -->
+            <div class="items-management" *ngIf="!loading">
+                <h2>Items Management</h2>
+                
+                <div *ngIf="items.length === 0" class="no-items">
+                    <p>No items found. Please add some items using the form above.</p>
                 </div>
 
-                <div class="inventory-card">
-                    <h3>Women’s Uniform</h3>
-                    <div class="stock-info">
-                        <div class="label">Total Stocks</div>
-                        <div class="stock-number">
-                            1,000 
-                            <button class="add-btn">+</button>
-                        </div>
-                    </div>
-                    <div class="order-info">
-                        <div>
-                            <div class="label">Pending Order</div>
-                            <div class="number">1,000</div>
-                        </div>
-                        <div>
-                            <div class="label">Available</div>
-                            <div class="number">1,000</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="inventory-card">
-                    <h3>P.E. Uniform</h3>
-                    <div class="stock-info">
-                        <div class="label">Total Stocks</div>
-                        <div class="stock-number">
-                            1,000 
-                            <button class="add-btn">+</button>
-                        </div>
-                    </div>
-                    <div class="order-info">
-                        <div>
-                            <div class="label">Pending Order</div>
-                            <div class="number">1,000</div>
-                        </div>
-                        <div>
-                            <div class="label">Available</div>
-                            <div class="number">1,000</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="inventory-card">
-                    <h3>NSTP Shirt</h3>
-                    <div class="stock-info">
-                        <div class="label">Total Stocks</div>
-                        <div class="stock-number">
-                            1,000 
-                            <button class="add-btn">+</button>
-                        </div>
-                    </div>
-                    <div class="order-info">
-                        <div>
-                            <div class="label">Pending Order</div>
-                            <div class="number">1,000</div>
-                        </div>
-                        <div>
-                            <div class="label">Available</div>
-                            <div class="number">1,000</div>
-                        </div>
-                    </div>
+                <div class="items-table-container" *ngIf="items.length > 0">
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Item Name</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Variants</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of items" class="item-row">
+                                <td>
+                                    <div class="image-container">
+                                        <img *ngIf="item.image_url" [src]="'http://localhost:3000' + item.image_url" 
+                                             [alt]="item.name" class="item-image">
+                                        <div *ngIf="!item.image_url" class="no-image">No Image</div>
+                                        
+                                        <!-- Image Update Controls -->
+                                        <div class="image-update-controls">
+                                            <button *ngIf="!isImageUpdateMode(item.item_id)" 
+                                                    class="update-image-btn" 
+                                                    (click)="toggleImageUpdateMode(item.item_id)" 
+                                                    title="Update Image">
+                                                📷
+                                            </button>
+                                            
+                                            <div *ngIf="isImageUpdateMode(item.item_id)" class="image-update-form">
+                                                <input type="file" 
+                                                       [id]="'imageFile-' + item.item_id"
+                                                       (change)="onImageUpdateFileChange($event, item.item_id)" 
+                                                       accept="image/*" 
+                                                       class="image-file-input">
+                                                <div class="image-update-buttons">
+                                                    <button class="save-image-btn" 
+                                                            (click)="updateItemImage(item.item_id)"
+                                                            title="Save Image">
+                                                        ✓
+                                                    </button>
+                                                    <button class="cancel-image-btn" 
+                                                            (click)="cancelImageUpdate(item.item_id)"
+                                                            title="Cancel">
+                                                        ✕
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="item-name">{{ item.name }}</td>
+                                <td class="item-description">{{ item.description || 'No description' }}</td>
+                                <td>
+                                    <span class="item-status" [class.inactive]="item.is_active === 0">
+                                        {{ item.is_active === 1 ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </td>
+                                <td class="variants-cell">
+                                    <div class="variants-summary">
+                                        <div class="variant-stats">
+                                            <span class="stat-item">
+                                                <strong>Total Stock:</strong> {{ getTotalStock(item.variants) }}
+                                            </span>
+                                            <span class="stat-item">
+                                                <strong>Available:</strong> {{ getAvailableStock(item.variants) }}
+                                            </span>
+                                            <span class="stat-item">
+                                                <strong>Sold:</strong> {{ getSoldStock(item.variants) }}
+                                            </span>
+                                        </div>
+                                        <button class="toggle-variants-btn" (click)="toggleVariants(item.item_id)">
+                                            {{ isVariantsExpanded(item.item_id) ? 'Hide Details' : 'Show Details' }}
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="variants-details" *ngIf="isVariantsExpanded(item.item_id)">
+                                        <table class="variants-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Size</th>
+                                                    <th>Stock</th>
+                                                    <th>Price</th>
+                                                    <th>Available</th>
+                                                    <th>Sold</th>
+                                                    <th>Pending</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr *ngFor="let variant of item.variants" class="variant-row">
+                                                    <td class="variant-size">{{ variant.size }}</td>
+                                                    <td>
+                                                        <input type="number" [(ngModel)]="variant.stock" 
+                                                               class="variant-input" min="0">
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" [(ngModel)]="variant.price" 
+                                                               class="variant-input" min="0" step="0.01">
+                                                    </td>
+                                                    <td class="available-stock">{{ variant.available || variant.stock }}</td>
+                                                    <td class="sold-stock">{{ variant.sold || 0 }}</td>
+                                                    <td class="pending-stock">{{ variant.pending || 0 }}</td>
+                                                    <td>
+                                                        <button class="update-variant-btn" 
+                                                                (click)="updateVariant(variant.variant_id, variant.stock, variant.price)">
+                                                            Update
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </td>
+                                <td class="actions-cell">
+                                    <div class="action-buttons">
+                                        <button class="edit-item-btn" (click)="editItem(item)" title="Edit Item">
+                                            ✏️
+                                        </button>
+                                        <button class="toggle-status-btn" 
+                                                (click)="toggleItemStatus(item.item_id, item.is_active)"
+                                                [class.activate]="item.is_active === 0"
+                                                [class.deactivate]="item.is_active === 1">
+                                            {{ item.is_active === 1 ? 'Deactivate' : 'Activate' }}
+                                        </button>
+                                        <button class="delete-item-btn" (click)="deleteItem(item.item_id)" title="Delete Item">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+
+            <!-- No data message -->
+            <div *ngIf="!loading && items.length === 0" class="no-data">
+                <p>No inventory data available. Please add some items first.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Item Modal -->
+    <div *ngIf="showEditModal" class="modal-overlay" (click)="closeEditModal()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Edit Item</h3>
+                <button class="close-btn" (click)="closeEditModal()">×</button>
+            </div>
+            
+            <form [formGroup]="editForm" (ngSubmit)="updateItem()" class="edit-form">
+                <div class="form-group">
+                    <label for="editName">Item Name</label>
+                    <input type="text" id="editName" formControlName="name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <textarea id="editDescription" formControlName="description" class="form-textarea" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editImageFile">Update Image (optional)</label>
+                    <input type="file" id="editImageFile" (change)="onEditImageFileChange($event)" 
+                           accept="image/*" class="form-file-input">
+                    <small class="form-help">Leave empty to keep current image</small>
+                </div>
+                
+                <div class="current-image" *ngIf="editingItem?.image_url">
+                    <label>Current Image:</label>
+                    <img [src]="'http://localhost:3000' + editingItem?.image_url" 
+     [alt]="editingItem?.name" class="current-item-image">
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="cancel-btn" (click)="closeEditModal()">Cancel</button>
+                    <button type="submit" class="save-btn" [disabled]="!editForm.valid">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -40,26 +40,61 @@
             <h2 class="welcome-message">Shop</h2>
             
             <hr class="dashboard-line">
-            <h2>CATEGORY</h2>
-            <div class="category-container">
-                <div class="category-item">
-                    <img src="women.png" alt="Category 1" class="category-pic">
-                    
+            
+            <!-- Categories Section -->
+            <div class="categories-section">
+                <h3>CATEGORIES</h3>
+                
+                <!-- Loading State -->
+                <div *ngIf="loading" class="loading-container">
+                    <p>Loading categories...</p>
                 </div>
-                <div class="category-item">
-                    <img src="men.png" alt="Category 2" class="category-pic">
-                    
+
+                <!-- Categories Grid -->
+                <div *ngIf="!loading" class="category-container">
+                    <div class="category-item" (click)="viewCategoryProducts('Women')">
+                        <img src="women.png" alt="Women's Uniforms" class="category-pic">
+                        <div class="category-info">
+                            <h4>Women</h4>
+                            <p *ngIf="getCategoryByName('Women')">
+                                {{ getCategoryByName('Women')?.item_count }} items
+                            </p>
+                        </div>
+                    </div>
+                    <div class="category-item" (click)="viewCategoryProducts('Men')">
+                        <img src="men.png" alt="Men's Uniforms" class="category-pic">
+                        <div class="category-info">
+                            <h4>Men</h4>
+                            <p *ngIf="getCategoryByName('Men')">
+                                {{ getCategoryByName('Men')?.item_count }} items
+                            </p>
+                        </div>
+                    </div>
+                    <div class="category-item" (click)="viewCategoryProducts('PE')">
+                        <img src="pe.png" alt="PE Uniforms" class="category-pic">
+                        <div class="category-info">
+                            <h4>PE</h4>
+                            <p *ngIf="getCategoryByName('PE')">
+                                {{ getCategoryByName('PE')?.item_count }} items
+                            </p>
+                        </div>
+                    </div>
+                    <div class="category-item" (click)="viewCategoryProducts('NSTP')">
+                        <img src="nstp.png" alt="NSTP Uniforms" class="category-pic">
+                        <div class="category-info">
+                            <h4>NSTP</h4>
+                            <p *ngIf="getCategoryByName('NSTP')">
+                                {{ getCategoryByName('NSTP')?.item_count }} items
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div class="category-item">
-                    <img src="pe.png" alt="Category 3" class="category-pic">
-                    
-                </div>
-                <div class="category-item">
-                    <img src="nstp.png" alt="Category 3" class="category-pic">
-                    
+
+                <!-- Empty State -->
+                <div *ngIf="!loading && categoryStats.length === 0" class="empty-state">
+                    <p>No categories available at the moment.</p>
                 </div>
             </div>
         </div>
     </div>
-
 </div>

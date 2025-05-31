@@ -5,7 +5,7 @@
             <div class="logo">
                 <img src="profilelogo.png" alt="Profile Logo" class="profilelogo">
             </div>
-            <h2 class="studentname">{{ userFullName }}</h2>
+            <h2 class="studentname">{{ userFullName || 'Loading...' }}</h2>
             <div class="nav">
                 <ul>
                     <li><a routerLink="/userdashboard">
@@ -21,11 +21,13 @@
                     <li><a routerLink="/usercart">
                         <span class="navitem"><img src="cartlogo.png"></span>
                         <span>Cart</span>
+                        <span *ngIf="getCartBadgeCount() > 0" style="background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; margin-left: 5px;">{{ getCartBadgeCount() }}</span>
                         </a>
                     </li>
                     <li><a routerLink="/userpurchase">
                         <span class="navitem"><img src="purchaselogo.png"></span>
                         <span>My Purchase</span>
+                        <span *ngIf="getPurchaseBadgeCount() > 0" style="background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; margin-left: 5px;">{{ getPurchaseBadgeCount() }}</span>
                         </a>
                     </li>
                 </ul>
@@ -38,29 +40,67 @@
 
         </div>
         <div class="content">
-            <h2 class="welcome-message">Welcome to your Dashboard, {{ userFullName }}!</h2>
+            <h2 class="welcome-message">Welcome to your Dashboard, {{ userFullName || 'Student' }}!</h2>
             <hr class="dashboard-line">
 
-            <h3>Find Uniform that you need</h3>
-            <img src="samplepic.png" alt="Sample Image" class="sample-pic">
+            <!-- Display real featured item or fallback text -->
+            <h3>
+                <span *ngIf="featuredItems.length > 0">{{ featuredItems[0].name }}</span>
+                <span *ngIf="featuredItems.length === 0">Find Uniform that you need</span>
+            </h3>
+            
+            <!-- Display real featured item image or sample image -->
+            <img *ngIf="featuredItems.length > 0" 
+                 [src]="getImageUrl(featuredItems[0].image_url)" 
+                 [alt]="featuredItems[0].name" 
+                 class="sample-pic"
+                 (click)="navigateToShop()"
+                 style="cursor: pointer;">
+            <img *ngIf="featuredItems.length === 0" 
+                 src="samplepic.png" 
+                 alt="Sample Image" 
+                 class="sample-pic"
+                 (click)="navigateToShop()"
+                 style="cursor: pointer;">
+            
             <hr class="dashboard-line">
             <h2>CATEGORY</h2>
             <div class="category-container">
-                <div class="category-item">
-                    <img src="women.png" alt="Category 1" class="category-pic">
-                    
+                <!-- Display real categories or default ones -->
+                <div class="category-item" 
+                     *ngFor="let category of getDisplayCategories()"
+                     (click)="navigateToShop(category.category)">
+                    <img [src]="getCategoryImage(category.category)" 
+                         [alt]="category.category" 
+                         class="category-pic">
+                    <!-- Show item count if available -->
+                    <div *ngIf="category.item_count > 0" 
+                         style="position: absolute; background: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; margin-top: 10px; margin-left: 10px; font-size: 12px;">
+                        {{ category.item_count }} items
+                    </div>
                 </div>
-                <div class="category-item">
-                    <img src="men.png" alt="Category 2" class="category-pic">
-                    
+            </div>
+
+            <!-- Add dashboard stats display (optional, styled to match your design) -->
+            <div *ngIf="dashboardStats.totalOrders > 0 || dashboardStats.pendingOrders > 0 || dashboardStats.cartItems > 0" 
+                 style="margin-top: 30px; display: flex; gap: 20px; flex-wrap: wrap;">
+                
+                <div *ngIf="dashboardStats.totalOrders > 0" 
+                     style="background: #0B6624; color: white; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px;">
+                    <div style="font-size: 24px; font-weight: bold;">{{ dashboardStats.totalOrders }}</div>
+                    <div style="font-size: 12px;">Total Orders</div>
                 </div>
-                <div class="category-item">
-                    <img src="pe.png" alt="Category 3" class="category-pic">
-                    
+                
+                <div *ngIf="dashboardStats.pendingOrders > 0" 
+                     style="background: #07581e; color: white; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px;">
+                    <div style="font-size: 24px; font-weight: bold;">{{ dashboardStats.pendingOrders }}</div>
+                    <div style="font-size: 12px;">Pending Orders</div>
                 </div>
-                <div class="category-item">
-                    <img src="nstp.png" alt="Category 3" class="category-pic">
-                    
+                
+                <div *ngIf="dashboardStats.cartItems > 0" 
+                     style="background: #02220B; color: white; padding: 15px; border-radius: 8px; text-align: center; min-width: 120px;">
+                    <div style="font-size: 24px; font-weight: bold;">{{ dashboardStats.cartItems }}</div>
+                    <div style="font-size: 12px;">Items in Cart</div>
                 </div>
             </div>
         </div>
