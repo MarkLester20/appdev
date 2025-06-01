@@ -148,23 +148,62 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-  buyNow(): void {
-    if (!this.selectedVariant || !this.product) {
-      alert('Please select a size');
-      return;
-    }
-
-    if (this.quantity > this.selectedVariant.stock) {
-      alert('Not enough stock available');
-      return;
-    }
-
-    // Add to cart first, then redirect to cart
-    this.addToCart();
-    setTimeout(() => {
-      this.router.navigate(['/usercart']);
-    }, 1000);
+  purchaseNow(): void {
+  if (!this.selectedVariant || !this.product) {
+    alert('Please select a size');
+    return;
   }
+
+  if (this.quantity > this.selectedVariant.stock) {
+    alert('Not enough stock available');
+    return;
+  }
+
+  const cartData = {
+    variant_id: this.selectedVariant.variant_id,
+    quantity: this.quantity
+  };
+
+  // 1. Add to cart
+  this.http.post<{status: boolean, message: string, cart_id?: number}>('http://localhost:3000/api/cart/add', cartData, {
+    withCredentials: true
+  }).subscribe({
+    next: (res) => {
+      if (res.status) {
+        // 2. Get the cart to find the cart_id for this variant
+        this.http.get<any>('http://localhost:3000/api/cart', { withCredentials: true }).subscribe({
+          next: (cartRes) => {
+            const cartItem = (cartRes.cart || []).find((item: any) => item.variant_id === this.selectedVariant!.variant_id);
+            if (cartItem) {
+              // 3. Place order for this cart item
+              this.http.post<{status: boolean, message: string}>(
+                `http://localhost:3000/api/cart/place-order/${cartItem.cart_id}`,
+                {},
+                { withCredentials: true }
+              ).subscribe({
+                next: (orderRes) => {
+                  if (orderRes.status) {
+                    alert('Purchase successful!');
+                    this.router.navigate(['/userpurchase']);
+                  } else {
+                    alert(orderRes.message || 'Failed to place order');
+                  }
+                },
+                error: () => alert('Failed to place order')
+              });
+            } else {
+              alert('Failed to find cart item for purchase.');
+            }
+          },
+          error: () => alert('Failed to fetch cart after adding item.')
+        });
+      } else {
+        alert(res.message || 'Failed to add item to cart');
+      }
+    },
+    error: () => alert('Failed to add item to cart')
+  });
+}
 
   goBack(): void {
     this.router.navigate(['/usershop']);
