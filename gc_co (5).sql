@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2025 at 11:21 PM
+-- Generation Time: Jun 01, 2025 at 11:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,7 +94,7 @@ CREATE TABLE `item_variants` (
 --
 
 INSERT INTO `item_variants` (`variant_id`, `item_id`, `size`, `stock`, `price`) VALUES
-(1, 1, 'M', 16, 700.00),
+(1, 1, 'M', 15, 700.00),
 (2, 1, 'S', 20, 700.00);
 
 -- --------------------------------------------------------
@@ -116,7 +116,8 @@ CREATE TABLE `orders` (
 
 INSERT INTO `orders` (`order_id`, `student_id`, `status`, `order_date`) VALUES
 (1, '202311111', 'pending', '2025-06-01 18:52:51'),
-(2, '202311111', 'paid', '2025-06-01 19:42:25');
+(2, '202311111', 'paid', '2025-06-01 19:42:25'),
+(3, '202311111', 'pending', '2025-06-01 21:38:08');
 
 -- --------------------------------------------------------
 
@@ -137,7 +138,8 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `variant_id`, `quantity`, `price_at_order`) VALUES
-(1, 2, 1, 2, 700.00);
+(1, 2, 1, 2, 700.00),
+(2, 3, 1, 1, 700.00);
 
 -- --------------------------------------------------------
 
@@ -229,7 +231,7 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `items`
@@ -247,13 +249,13 @@ ALTER TABLE `item_variants`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
