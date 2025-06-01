@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 01, 2025 at 11:39 PM
+-- Generation Time: Jun 01, 2025 at 11:52 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -160,7 +160,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `student_id`, `email`, `password_hash`, `fullname`) VALUES
-(1, '202311111', '202311111@gordoncollege.edu.ph', '$2b$10$lgHmtN519yNkLqWKqMw1se4qt3CG598RBXMjGoRcMJXXjbRysVgo2', 'Jean Armas');
+(1, '202311111', '202311111@gordoncollege.edu.ph', '$2b$10$lgHmtN519yNkLqWKqMw1se4qt3CG598RBXMjGoRcMJXXjbRysVgo2', 'Jean Armas'),
+(2, '202322222', '202322222@gordoncollege.edu.ph', '$2b$10$x26yyKpBLxGsS7PACqe.r.BsJxWwAfVqEekSCBSRGdaTxesQhn9CO', 'Mark Torres');
 
 --
 -- Indexes for dumped tables
@@ -261,7 +262,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
