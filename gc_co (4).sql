@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 31, 2025 at 03:11 AM
+-- Generation Time: Jun 01, 2025 at 11:21 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,6 +44,19 @@ INSERT INTO `admins` (`admin_id`, `email`, `password_hash`, `full_name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `cart`
+--
+
+CREATE TABLE `cart` (
+  `cart_id` int(11) NOT NULL,
+  `student_id` varchar(50) NOT NULL,
+  `variant_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `items`
 --
 
@@ -60,10 +73,7 @@ CREATE TABLE `items` (
 --
 
 INSERT INTO `items` (`item_id`, `name`, `description`, `image_url`, `is_active`) VALUES
-(1, 'School Uniform - Male', 'Standard male school uniform set', '/uploads/1748651376478-image-removebg-preview (3).png', 1),
-(2, 'School Uniform - Female', 'Standard female school uniform set', '/uploads/1748651258429-image-removebg-preview.png', 1),
-(3, 'PE Uniform', 'Physical Education uniform set', '/uploads/1748651267317-image-removebg-preview (1).png', 1),
-(4, 'NSTP Uniform', 'NSTP uniform set', '', 1);
+(1, 'Men\'s Uniform', 'This is only a Gordon College uniform\'s fabric set. The buyers are responsible for customizing/tailoring', '/uploads/1748785755036-samplepic.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -84,26 +94,8 @@ CREATE TABLE `item_variants` (
 --
 
 INSERT INTO `item_variants` (`variant_id`, `item_id`, `size`, `stock`, `price`) VALUES
-(1, 1, 'XS', 51, 550.00),
-(2, 1, 'S', 100, 550.00),
-(3, 1, 'M', 100, 550.00),
-(4, 1, 'L', 80, 550.00),
-(5, 1, 'XL', 60, 550.00),
-(6, 2, 'XS', 50, 530.00),
-(7, 2, 'S', 100, 530.00),
-(8, 2, 'M', 100, 530.00),
-(9, 2, 'L', 80, 530.00),
-(10, 2, 'XL', 60, 530.00),
-(11, 3, 'XS', 70, 480.00),
-(12, 3, 'S', 120, 480.00),
-(13, 3, 'M', 120, 480.00),
-(14, 3, 'L', 90, 480.00),
-(15, 3, 'XL', 70, 480.00),
-(16, 4, 'XS', 70, 450.00),
-(17, 4, 'S', 120, 450.00),
-(18, 4, 'M', 120, 450.00),
-(19, 4, 'L', 80, 450.00),
-(20, 4, 'XL', 70, 450.00);
+(1, 1, 'M', 16, 700.00),
+(2, 1, 'S', 20, 700.00);
 
 -- --------------------------------------------------------
 
@@ -113,7 +105,7 @@ INSERT INTO `item_variants` (`variant_id`, `item_id`, `size`, `stock`, `price`) 
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `student_id` varchar(20) NOT NULL,
   `status` enum('pending','paid') DEFAULT 'pending',
   `order_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -122,9 +114,9 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `user_id`, `status`, `order_date`) VALUES
-(1, 1, 'pending', '2025-05-25 01:00:00'),
-(2, 2, 'paid', '2025-05-26 06:30:00');
+INSERT INTO `orders` (`order_id`, `student_id`, `status`, `order_date`) VALUES
+(1, '202311111', 'pending', '2025-06-01 18:52:51'),
+(2, '202311111', 'paid', '2025-06-01 19:42:25');
 
 -- --------------------------------------------------------
 
@@ -145,10 +137,7 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `variant_id`, `quantity`, `price_at_order`) VALUES
-(1, 1, 3, 2, 550.00),
-(2, 1, 12, 1, 480.00),
-(3, 2, 8, 1, 530.00),
-(4, 2, 17, 2, 450.00);
+(1, 2, 1, 2, 700.00);
 
 -- --------------------------------------------------------
 
@@ -169,10 +158,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `student_id`, `email`, `password_hash`, `fullname`) VALUES
-(0, '202300000', '202300000@gordoncollege.edu.ph', '$2b$10$.ff8Muse/Kx/f5/F2r/EGetsQJjfYNvLaRnL/SmKZzevbciQRLKc6', 'Sample User'),
-(1, '202300001', '202300001@gordoncollege.edu.ph', '00000', 'Alice Santos'),
-(2, '202300002', '202300002@gordoncollege.edu.ph', '00000', 'Bob dela Cruz'),
-(3, '202300003', '202300003@gordoncollege.edu.ph', '00000', 'Cathy Reyes');
+(1, '202311111', '202311111@gordoncollege.edu.ph', '$2b$10$lgHmtN519yNkLqWKqMw1se4qt3CG598RBXMjGoRcMJXXjbRysVgo2', 'Jean Armas');
 
 --
 -- Indexes for dumped tables
@@ -184,6 +170,14 @@ INSERT INTO `users` (`user_id`, `student_id`, `email`, `password_hash`, `fullnam
 ALTER TABLE `admins`
   ADD PRIMARY KEY (`admin_id`),
   ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `cart`
+--
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`cart_id`),
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `variant_id` (`variant_id`);
 
 --
 -- Indexes for table `items`
@@ -203,7 +197,7 @@ ALTER TABLE `item_variants`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`student_id`);
 
 --
 -- Indexes for table `order_items`
@@ -232,32 +226,51 @@ ALTER TABLE `admins`
   MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `items`
 --
 ALTER TABLE `items`
-  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `item_variants`
 --
 ALTER TABLE `item_variants`
-  MODIFY `variant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `variant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`student_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`variant_id`) REFERENCES `item_variants` (`variant_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `item_variants`
@@ -269,7 +282,7 @@ ALTER TABLE `item_variants`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `users` (`student_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `order_items`
