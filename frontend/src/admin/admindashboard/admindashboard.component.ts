@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 interface DashboardStats {
@@ -35,11 +35,47 @@ export class AdmindashboardComponent implements OnInit {
 
   private apiUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
     this.loadDashboardData();
   }
+  openLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+  closeLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+logout(): void {
+  
+  this.http.post('http://localhost:3000/api/admin/logout', {}, { withCredentials: true }).subscribe({
+    next: () => {
+     
+      localStorage.removeItem('admin'); 
+      sessionStorage.clear(); 
+
+      
+      this.router.navigate(['/adminlogin']).then(() => {
+        
+        window.history.replaceState(null, '', '/adminlogin');
+      });
+
+     
+      this.closeLogoutModal();
+    },
+    error: (error) => {
+      console.error('Logout error:', error);
+      alert('Logout failed. Please try again.');
+    }
+  });
+}
 
   loadDashboardData() {
     this.loading = true;
@@ -98,9 +134,9 @@ export class AdmindashboardComponent implements OnInit {
     return new Intl.NumberFormat('en-US').format(num);
   }
 
-  // Updated method to properly match backend categories
+  
   getStockByCategory(displayCategory: string): number {
-    // Map frontend display names to exact backend category names
+    
     const categoryMap: { [key: string]: string } = {
       "Men's Uniform": "Mens Uniform",
       "Women's Uniform": "Womens Uniform", 

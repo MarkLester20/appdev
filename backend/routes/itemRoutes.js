@@ -31,7 +31,7 @@ const upload = multer({
             cb(new Error('Only JPEG and PNG images are allowed'));
         }
     },
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+    limits: { fileSize: 5 * 1024 * 1024 } 
 });
 
 router.post('/upload', upload.single('image'), (req, res) => {
@@ -252,13 +252,14 @@ router.get('/featured', (req, res) => {
 });
 
 router.get('/categories/stats', (req, res) => {
+     console.log('Categories stats route hit!'); 
     const sql = `SELECT 
                     CASE 
-                        WHEN LOWER(i.name) LIKE '%men%' AND LOWER(i.name) NOT LIKE '%women%' THEN 'Mens Uniform'
-                        WHEN LOWER(i.name) LIKE '%women%' OR LOWER(i.name) LIKE '%female%' THEN 'Womens Uniform'
-                        WHEN LOWER(i.name) LIKE '%pe%' OR LOWER(i.name) LIKE '%physical%' THEN 'PE Uniform'
-                        WHEN LOWER(i.name) LIKE '%nstp%' THEN 'NSTP Shirt'
-                        ELSE 'Other'
+                         WHEN LOWER(i.name) LIKE '%men%' AND LOWER(i.name) NOT LIKE '%women%' AND LOWER(i.name) NOT LIKE '%female%' THEN 'Mens Uniform'
+                            WHEN (LOWER(i.name) LIKE '%women%' OR LOWER(i.name) LIKE '%female%') AND LOWER(i.name) NOT LIKE '%men%' THEN 'Womens Uniform'
+                            WHEN LOWER(i.name) LIKE '%pe%' OR LOWER(i.name) LIKE '%physical%' THEN 'PE Uniform'
+                            WHEN LOWER(i.name) LIKE '%nstp%' THEN 'NSTP Shirt'
+                            ELSE 'Other'
                     END as category,
                     COUNT(DISTINCT i.item_id) as item_count,
                     SUM(iv.stock) as total_stock

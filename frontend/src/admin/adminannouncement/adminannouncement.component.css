@@ -34,7 +34,7 @@
     }
 
     .nav {
-      margin-top: 50px;
+      
       width: 100%;
     }
 
@@ -59,7 +59,74 @@
   text-decoration: none;
   color: inherit;
 }
-
+.logout img{
+    
+    width: 40px;
+    height: auto;
+    white-space:nowrap;
+}
+.modal{
+  display:none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  align-items:center;
+  justify-content: center;
+  top: 0;
+  padding-top:200px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); 
+}
+.modal-container{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  
+  background-color: #fff;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 60%;
+  max-width: 400px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  font-family: Poppins, sans-serif;
+  color: #333;  
+}
+.modal-container p {
+  font-size: 20px;
+  margin-bottom: 10px;
+  padding-left:10px;
+}
+.modal-buttons{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  
+}
+.cancel-button{
+  background-color: #0f9d00;
+  color: white;
+  border-radius: 10px;
+}
+.confirm-button{
+  background-color: #0f9d00;
+  color: white;
+  border-radius: 10px;
+}
+.modal-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease; 
+}
+.modal-buttons button:hover {
+  background-color: #0c7b00; 
+  color: white; 
+}
 
 a:visited {
   color: inherit;

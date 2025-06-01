@@ -8,20 +8,31 @@
       <a routerLink="/admindashboard">
         <div class="nav-item">Dashboard</div>
       </a>
-      <a routerLink="/admindashboard">
+      <a routerLink="/admininventory">
         <div class="nav-item">Inventory</div>
       </a>
-      <a routerLink="/admindashboard">
+      <a routerLink="/adminorders">
         <div class="nav-item">Orders</div>
       </a>
-      <a routerLink="/admindashboard">
+      <a routerLink="/adminpending">
         <div class="nav-item">Pending</div>
       </a>
-      <a routerLink="/admindashboard">
+      <a routerLink="/adminannouncement">
         <div class="nav-item active">Announcement</div>
       </a>
     </div>
-    
+    <div class="logout" name="log-out" id="log-out" >
+                <img src="logoutlogo.png" (click)="openLogoutModal()">
+             </div>
+        <div id="logoutModal" class="modal">
+            <div class="modal-container" id="logoutModalContainer">
+                <p>Are you sure you want to log out?</p>
+                <div class="modal-buttons">
+                    <button (click)="logout()" class="confirm-button">Confirm</button>
+                    <button (click)="closeLogoutModal()" class="cancel-button">Cancel</button>                
+                </div>    
+            </div>    
+        </div>
   </div>
 
   

@@ -35,6 +35,33 @@
                 <a routerLink="/userlogin" class="logout"><img src="logoutlogo.png" alt="Logout Logo" class="logoutlogo"></a> 
               </div>    
         </div>
-    </div>
+        <div class="cart-container">
+          <h2>Your Cart</h2>
+
+          <div *ngIf="loading">Loading...</div>
+          <div *ngIf="errorMessage">{{ errorMessage }}</div>
+          <div *ngIf="cartItems.length === 0 && !loading">Your cart is empty.</div>
+
+          <div *ngFor="let item of cartItems" class="cart-item">
+            <img [src]="'http://localhost:3000' + item.image_url" alt="{{ item.product_name }}" />
+            <div class="details">
+              <h4>{{ item.product_name }}</h4>
+              <p>Size: {{ item.size }}</p>
+              <p>₱{{ item.price }}</p>
+              <div class="quantity-controls">
+                <button (click)="updateQuantity(item, -1)">-</button>
+                <span>{{ item.quantity }}</span>
+                <button (click)="updateQuantity(item, 1)">+</button>
+              </div>
+              <button class="remove" (click)="deleteItem(item)">Remove</button>
+              <button class="checkout-btn" (click)="placeOrder(item.cart_id)">Place Order</button>
+              <!-- Place Order button for each item -->
+            </div>
+          </div>
+
+          <div class="total" *ngIf="cartItems.length > 0">
+            <strong>Total:</strong> ₱{{ getTotalPrice() }}
+          </div>
+          </div>  
 
 </div>

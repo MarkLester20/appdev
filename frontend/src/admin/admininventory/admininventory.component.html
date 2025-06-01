@@ -15,13 +15,24 @@
                 <a routerLink="/adminorders">
                   <div class="nav-item">Orders</div>
                 </a>
-                <a routerLink="/adminpending">
+                <a routerLink="/History">
                   <div class="nav-item">Pending</div>
                 </a>
-                <a routerLink="/adminannouncement">
-                  <div class="nav-item">Announcement</div>
-                </a>
+                
               </div>
+               <div class="logout" name="log-out" id="log-out" >
+                <img src="logoutlogo.png" (click)="openLogoutModal()">
+             </div>
+
+        <div id="logoutModal" class="modal">
+            <div class="modal-container" id="logoutModalContainer">
+                <p>Are you sure you want to log out?</p>
+                <div class="modal-buttons">
+                    <button (click)="logout()" class="confirm-button">Confirm</button>
+                    <button (click)="closeLogoutModal()" class="cancel-button">Cancel</button>                
+                </div>    
+            </div>    
+        </div>
         </div>
 
         <div class="main">

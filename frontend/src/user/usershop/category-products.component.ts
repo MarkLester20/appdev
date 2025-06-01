@@ -47,7 +47,7 @@ export class CategoryProductsComponent implements OnInit {
     this.route.params.subscribe(params => {
       const category = params['category'];
       if (category) {
-        // Convert URL-friendly category back to original format
+        
         this.categoryName = this.formatCategoryName(category);
         this.loadCategoryProducts(this.categoryName);
       }

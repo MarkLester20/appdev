@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, FormArray, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AdminInventoryService } from './admininventory.service';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import {  HttpClient } from '@angular/common/http';
 
 interface Item {
   item_id: number;
@@ -29,7 +29,7 @@ interface ItemVariant {
 @Component({
   selector: 'app-admininventory',
   standalone: true,
-  imports: [ CommonModule, RouterLink, ReactiveFormsModule, FormsModule, HttpClientModule ],
+  imports: [ CommonModule, RouterLink, ReactiveFormsModule, FormsModule ],
   templateUrl: './admininventory.component.html',
   styleUrl: './admininventory.component.css'
 })
@@ -53,6 +53,7 @@ export class AdmininventoryComponent implements OnInit {
   imageUpdateMode: Set<number> = new Set(); // Track which items are in image update mode
 
   constructor(
+    private http: HttpClient,
     private fb: FormBuilder, 
     private inventoryService: AdminInventoryService,
     private router: Router
@@ -74,6 +75,42 @@ export class AdmininventoryComponent implements OnInit {
   ngOnInit() {
     this.loadInventoryData();
   }
+openLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+  closeLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+logout(): void {
+  
+  this.http.post('http://localhost:3000/api/admin/logout', {}, { withCredentials: true }).subscribe({
+    next: () => {
+     
+      localStorage.removeItem('admin'); 
+      sessionStorage.clear(); 
+
+      
+      this.router.navigate(['/adminlogin']).then(() => {
+        
+        window.history.replaceState(null, '', '/adminlogin');
+      });
+
+     
+      this.closeLogoutModal();
+    },
+    error: (error) => {
+      console.error('Logout error:', error);
+      alert('Logout failed. Please try again.');
+    }
+  });
+}
 
   loadInventoryData() {
     this.loading = true;

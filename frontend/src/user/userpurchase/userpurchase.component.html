@@ -31,9 +31,38 @@
                 
               </div>       
               <hr class="line">    
-              <div class="logout-container">
-                <a routerLink="/userlogin" class="logout"><img src="logoutlogo.png" alt="Logout Logo" class="logoutlogo"></a> 
-              </div>    
+
+              <div class="logout" name="log-out" id="log-out" >
+                <img src="logoutlogo.png" (click)="openLogoutModal()">
+             </div>
+
+            <div id="logoutModal" class="modal">
+                <div class="modal-container" id="logoutModalContainer">
+                    <p>Are you sure you want to log out?</p>
+                    <div class="modal-buttons">
+                        <button (click)="logout()" class="confirm-button">Confirm</button>
+                        <button (click)="closeLogoutModal()" class="cancel-button">Cancel</button>                
+                    </div>    
+                </div>    
+            </div>    
+        
+        </div>
+        <div class="purchase-content">
+            <h2>My Purchases</h2>
+            <div *ngIf="purchases.length === 0" class="empty-state">
+                No purchases yet.
+            </div>
+            <div *ngFor="let order of purchases" class="purchase-item">
+                <div class="purchase-header">
+                <span class="order-id">Order #{{ order.order_id }}</span>
+                <span class="order-date">{{ order.order_date | date:'short' }}</span>
+                <span class="order-status" [ngClass]="order.status">{{ order.status | titlecase }}</span>
+                </div>
+                <div class="purchase-details">
+                <div><strong>Items:</strong> {{ order.items }}</div>
+                <div><strong>Total:</strong> ₱{{ order.total_amount }}</div>
+                </div>
+            </div>
         </div>
     </div>
 

@@ -25,10 +25,10 @@ export const routes: Routes = [
     {path: 'adminannouncement', component: AdminannouncementComponent, canActivate: [AuthGuard], data: { role: 'admin' }},
 
     {path: 'userlogin', component: UserloginComponent},
-    {path: 'userdashboard', component: UserdashboardComponent, canActivate: [AuthGuard], data: { role: 'student' }},
-    {path: 'usershop', component: UsershopComponent, canActivate: [AuthGuard], data: { role: 'student' }},
-    {path: 'usercart', component: UsercartComponent, canActivate: [AuthGuard], data: { role: 'student' }},
-    {path: 'userpurchase', component: UserpurchaseComponent, canActivate: [AuthGuard], data: { role: 'student' }},
-    {path: 'category/:category', component: CategoryProductsComponent, canActivate: [AuthGuard], data: { role: 'student' }},
-    {path: 'product/:id', component: ProductDetailComponent, canActivate: [AuthGuard], data: { role: 'student' }},
+    {path: 'userdashboard', component: UserdashboardComponent, canActivate: [AuthGuard], data: { role: 'user' }},
+    {path: 'usershop', component: UsershopComponent, canActivate: [AuthGuard], data: { role: 'user' }},
+    {path: 'usercart', component: UsercartComponent, canActivate: [AuthGuard], data: { role: 'user' }},
+    {path: 'userpurchase', component: UserpurchaseComponent, canActivate: [AuthGuard], data: { role: 'user' }},
+    {path: 'category/:category', component: CategoryProductsComponent, canActivate: [AuthGuard], data: { role: 'user' }},
+    {path: 'product/:id', component: ProductDetailComponent, canActivate: [AuthGuard], data: { role: 'user' }},
 ];

@@ -62,7 +62,7 @@ router.post('/login', async (req, res) => {
         }
 
         if (isMatch) {
-            req.session.user = { id: user.student_id, role: 'user' };
+            req.session.user = { student_id: user.student_id, role: 'user' };
             return res.send({ status: true, message: 'Login successful', data: user });
         }
         res.send({ status: false, message: 'Invalid password' });
@@ -71,7 +71,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/profile', checkUserAuth, (req, res) => {
     const sql = 'SELECT fullName FROM users WHERE student_id = ?';
-    db.query(sql, [req.session.user.id], (err, results) => {
+    db.query(sql, [req.session.user.student_id], (err, results) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).send({ status: false, message: 'Database error' });
@@ -85,21 +85,21 @@ router.get('/profile', checkUserAuth, (req, res) => {
 });
 
 router.get('/dashboard-stats', checkUserAuth, (req, res) => {
-    const ordersSql = 'SELECT COUNT(*) as total_orders FROM orders WHERE user_id = (SELECT user_id FROM users WHERE student_id = ?)';
-    const pendingOrdersSql = 'SELECT COUNT(*) as pending_orders FROM orders WHERE user_id = (SELECT user_id FROM users WHERE student_id = ?) AND status = "pending"';
-    const cartItemsSql = 'SELECT COALESCE(SUM(oi.quantity), 0) as cart_items FROM orders o JOIN order_items oi ON o.order_id = oi.order_id WHERE o.user_id = (SELECT user_id FROM users WHERE student_id = ?) AND o.status = "cart"';
+    const ordersSql = 'SELECT COUNT(*) as total_orders FROM orders WHERE student_id = ?';
+    const pendingOrdersSql = 'SELECT COUNT(*) as pending_orders FROM orders WHERE student_id = ? AND status = "pending"';
+    const cartItemsSql = 'SELECT COALESCE(SUM(quantity), 0) as cart_items FROM cart WHERE student_id = ?';
 
-    db.query(ordersSql, [req.session.user.id], (err1, ordersResult) => {
+    db.query(ordersSql, [req.session.user.student_id], (err1, ordersResult) => {
         if (err1) {
             console.error('Database error:', err1);
             return res.status(500).send({ status: false, message: 'Database error' });
         }
-        db.query(pendingOrdersSql, [req.session.user.id], (err2, pendingResult) => {
+        db.query(pendingOrdersSql, [req.session.user.student_id], (err2, pendingResult) => {
             if (err2) {
                 console.error('Database error:', err2);
                 return res.status(500).send({ status: false, message: 'Database error' });
             }
-            db.query(cartItemsSql, [req.session.user.id], (err3, cartResult) => {
+            db.query(cartItemsSql, [req.session.user.student_id], (err3, cartResult) => {
                 if (err3) {
                     console.error('Database error:', err3);
                     return res.status(500).send({ status: false, message: 'Database error' });
@@ -118,24 +118,43 @@ router.get('/dashboard-stats', checkUserAuth, (req, res) => {
 });
 
 router.get('/recent-orders', checkUserAuth, (req, res) => {
-    const sql = `SELECT o.order_id, o.status, o.order_date, 
-                        GROUP_CONCAT(CONCAT(i.name, ' (', iv.size, ')') SEPARATOR ', ') as items,
-                        SUM(oi.quantity * oi.price_at_order) as total_amount
-                 FROM orders o
-                 JOIN order_items oi ON o.order_id = oi.order_id
-                 JOIN item_variants iv ON oi.variant_id = iv.variant_id
-                 JOIN items i ON iv.item_id = i.item_id
-                 WHERE o.user_id = (SELECT user_id FROM users WHERE student_id = ?)
-                 AND o.status != 'cart'
-                 GROUP BY o.order_id
-                 ORDER BY o.order_date DESC
-                 LIMIT 5`;
-    db.query(sql, [req.session.user.id], (err, results) => {
+    const sql = `
+        SELECT o.order_id, o.status, o.order_date, 
+               GROUP_CONCAT(CONCAT(i.name, ' (', iv.size, ')') SEPARATOR ', ') as items,
+               SUM(oi.quantity * oi.price_at_order) as total_amount
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        JOIN item_variants iv ON oi.variant_id = iv.variant_id
+        JOIN items i ON iv.item_id = i.item_id
+        WHERE o.student_id = ?
+        
+        GROUP BY o.order_id
+        ORDER BY o.order_date DESC
+        LIMIT 5`;
+    db.query(sql, [req.session.user.student_id], (err, results) => {
         if (err) {
             console.error('Database error:', err);
             return res.status(500).send({ status: false, message: 'Database error' });
         }
         res.send({ status: true, data: results });
+    });
+});
+router.post("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Session destroy error:', err);
+            return res.status(500).send({ status: false, message: 'Logout failed' });
+        }
+
+        res.clearCookie('connect.sid', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'Lax',
+            domain: 'localhost'
+        });
+
+        console.log('Session destroyed successfully');
+        return res.send({ status: true, message: 'Logout successful' });
     });
 });
 

@@ -51,28 +51,57 @@ export class UserdashboardComponent implements OnInit {
     this.loadFeaturedItems();
     this.loadCategoryStats();
   }
+  openLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+  closeLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+ 
+logout(): void {
+  
+  this.http.post('http://localhost:3000/api/user/logout', {}, { withCredentials: true }).subscribe({
+    next: () => {
+     
+      localStorage.removeItem('user'); 
+      sessionStorage.clear(); 
 
+      
+      this.router.navigate(['/userlogin']).then(() => {
+        
+        window.history.replaceState(null, '', '/userlogin');
+      });
+
+     
+      this.closeLogoutModal();
+    },
+    error: (error) => {
+      console.error('Logout error:', error);
+      alert('Logout failed. Please try again.');
+    }
+  });
+}
   loadUserProfile(): void {
-    this.http.get<{status: boolean, full_name: string}>('http://localhost:3000/api/user/profile', {
+    this.http.get<{status: boolean, data: {fullName: string}}>('http://localhost:3000/api/user/profile', {
       withCredentials: true
-    })
-    .subscribe({
+    }).subscribe({
       next: (res) => {
-        if (res.status) {
-          this.userFullName = res.full_name;
-        } else {
-          this.router.navigate(['/userlogin']);
+        if (res.status && res.data) {
+          this.userFullName = res.data.fullName;
         }
       },
-      error: (err) => {
-        console.error('Error loading profile:', err);
-        this.userFullName = 'Student';
-        if (err.status === 401) {
-          this.router.navigate(['/userlogin']);
-        }
+      error: () => {
+        this.userFullName = '';
       }
     });
   }
+  
 
   loadDashboardStats(): void {
     this.http.get<{status: boolean, data: DashboardStats}>('http://localhost:3000/api/user/dashboard-stats', {
@@ -95,7 +124,7 @@ export class UserdashboardComponent implements OnInit {
     .subscribe({
       next: (res) => {
         if (res.status) {
-          this.featuredItems = res.data.slice(0, 1); // Only show 1 featured item to match your design
+          this.featuredItems = res.data.slice(0, 1); 
         }
       },
       error: (err) => {
@@ -105,7 +134,7 @@ export class UserdashboardComponent implements OnInit {
   }
 
   loadCategoryStats(): void {
-    this.http.get<{status: boolean, data: CategoryStat[]}>('http://localhost:3000/api/categories/stats')
+    this.http.get<{status: boolean, data: CategoryStat[]}>('http://localhost:3000/api/items/categories/stats')
     .subscribe({
       next: (res) => {
         if (res.status) {

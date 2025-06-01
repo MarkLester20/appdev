@@ -27,7 +27,42 @@ export class UsershopComponent implements OnInit {
     this.loadUserProfile();
     this.loadCategoryStats();
   }
+  openLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'block';
+    }
+  }
+  closeLogoutModal(): void {
+    const modal = document.getElementById('logoutModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+ 
+logout(): void {
+  
+  this.http.post('http://localhost:3000/api/user/logout', {}, { withCredentials: true }).subscribe({
+    next: () => {
+     
+      localStorage.removeItem('user'); 
+      sessionStorage.clear(); 
 
+      
+      this.router.navigate(['/userlogin']).then(() => {
+        
+        window.history.replaceState(null, '', '/userlogin');
+      });
+
+     
+      this.closeLogoutModal();
+    },
+    error: (error) => {
+      console.error('Logout error:', error);
+      alert('Logout failed. Please try again.');
+    }
+  });
+}
   loadUserProfile(): void {
     this.http.get<{status: boolean, data: {fullName: string}}>('http://localhost:3000/api/user/profile', {
       withCredentials: true
@@ -64,9 +99,9 @@ export class UsershopComponent implements OnInit {
   }
 
   viewCategoryProducts(categoryName: string): void {
-    // Convert category name to URL-friendly format
+    
     const urlFriendlyCategory = categoryName.toLowerCase();
-    // Navigate to category products page
+    
     this.router.navigate(['/category', urlFriendlyCategory]);
   }
 }
